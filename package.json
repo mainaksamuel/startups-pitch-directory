@@ -6,21 +6,59 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "predev": "pnpm run typegen",
+    "prebuild": "pnpm run typegen",
+    "typegen": "sanity schema extract --path=./src/sanity/extracts.json && sanity typegen generate"
+  },
+  "packageManager": "pnpm@9.13.2",
+  "pnpm": {
+    "pnpm": {
+      "peerDependencyRules": {
+        "allowAny": [
+          "react",
+          "react-dom"
+        ]
+      }
+    }
+  },
+  "overrides": {
+    "react": "$react",
+    "react-dom": "$react-dom",
+    "next": "$next"
   },
   "dependencies": {
+    "@radix-ui/react-slot": "^1.1.0",
+    "@sanity/image-url": "1",
+    "@sanity/vision": "3",
+    "@tailwindcss/typography": "^0.5.15",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.1",
+    "easymde": "^2.18.0",
+    "lucide-react": "^0.456.0",
+    "markdown-it": "^14.1.0",
+    "next": "15.0.4-canary.22",
+    "next-auth": "5.0.0-beta.25",
+    "next-sanity": "9.8.3-canary.1",
     "react": "19.0.0-rc-66855b96-20241106",
     "react-dom": "19.0.0-rc-66855b96-20241106",
-    "next": "15.0.3"
+    "react-simplemde-editor": "^5.2.0",
+    "sanity": "^3.43.0",
+    "sanity-plugin-markdown": "^5.0.0",
+    "server-only": "^0.0.1",
+    "styled-components": "6",
+    "tailwind-merge": "^2.5.4",
+    "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
-    "typescript": "^5",
+    "@types/markdown-it": "^14.1.2",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "eslint": "^8",
+    "eslint-config-next": "15.0.3",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
-    "eslint": "^8",
-    "eslint-config-next": "15.0.3"
+    "typescript": "^5"
   }
 }
