@@ -1,6 +1,9 @@
 import { formatDate } from "@/lib/utils";
 import { client } from "@/sanity/lib/client";
-import { STARTUP_BY_ID_QUERY } from "@/sanity/lib/queries";
+import {
+  PLAYLIST_BY_SLUG_QUERY,
+  STARTUP_BY_ID_QUERY,
+} from "@/sanity/lib/queries";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -9,6 +12,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import markdownit from "markdown-it";
 import { Suspense } from "react";
 import StartupViews from "@/components/StartupViews";
+import StartupCard, { StartupCardType } from "@/components/StartupCard";
 
 const md = markdownit();
 
@@ -22,7 +26,13 @@ export default async function StartupDetailPage({
   params,
 }: StartupDetailPageProps) {
   const id = (await params).id;
-  const post = await client.fetch(STARTUP_BY_ID_QUERY, { id });
+
+  const [post, { select: editorPicks }] = await Promise.all([
+    client.fetch(STARTUP_BY_ID_QUERY, { id }),
+    client.fetch(PLAYLIST_BY_SLUG_QUERY, {
+      slug: "editor-picks",
+    }),
+  ]);
 
   if (!post) return notFound();
 
@@ -74,9 +84,20 @@ export default async function StartupDetailPage({
             <p className="no-result">No details provided.</p>
           )}
         </div>
+
         <hr className="divider" />
 
-        {/* TODO: Editor selected startups */}
+        {editorPicks.length > 0 && (
+          <div className="max-w-4xl mx-auto">
+            <p className="text-30-semibold">Editor Picks</p>
+
+            <ul className="mt-7 card_grid-sm">
+              {editorPicks.map((startup: StartupCardType, idx: number) => (
+                <StartupCard key={`${idx}-${startup._id}`} post={startup} />
+              ))}
+            </ul>
+          </div>
+        )}
 
         <Suspense fallback={<Skeleton className="view_skeleton" />}>
           <StartupViews id={post._id} />
